@@ -53,7 +53,7 @@ sudo apt update
 sudo apt install gcc make libcurl4-openssl-dev libjson-c-dev
 
 # Cloner le projet
-git clone https://github.com/VOTRE-USERNAME/cyberharcelement-detector.git
+git clone https://github.com/amazing-source/algo-preventioncyberharcelement.git
 cd cyberharcelement-detector
 
 # Configurer la clé API (modifier config.h)
