@@ -1,0 +1,496 @@
+\documentclass[a4paper, 12pt, twoside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}		
+\usepackage[francais]{babel}
+\usepackage{lmodern}
+\usepackage{ae,aecompl}
+\usepackage[top=2.5cm, bottom=2cm, 
+			left=3cm, right=2.5cm,
+			headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{eso-pic}
+\usepackage{array} 
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\input{pagedegarde}
+
+\title{Détecteur de cyberharcèlement avancé en C assisté par IA}
+\datedebut{XX/01/2025}
+\datefin{XX/01/2025}
+
+\membrea{DJEMATENE Dilan (44002835)}
+\membreb{LACOMBE Ariane (42006077)}
+\membrec{}
+\membred{}
+\membree{}
+\github{https://github.com/VOTRE-USERNAME/cyberharcelement-detector}
+
+\begin{document}
+\pagedegarde
+
+\section*{Remerciements}
+Nous tenons à remercier nos enseignants pour cette proposition de projet stimulante, ainsi que la communauté open-source pour la documentation sur libcurl et json-c. Un remerciement particulier à Mistral AI pour l'accès gratuit à leur API, et à Claude (Anthropic) pour l'assistance au développement.
+
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+\subsection{Le cyberharcèlement : un fléau moderne aux conséquences dramatiques}
+
+Le cyberharcèlement est devenu l'un des problèmes les plus graves de notre ère numérique. Contrairement au harcèlement traditionnel, il ne connaît ni frontières, ni horaires : la victime peut être atteinte 24 heures sur 24, 7 jours sur 7, dans l'intimité de son foyer.
+
+Ces dernières années, nous avons assisté à l'émergence de phénomènes particulièrement alarmants. Des groupes organisés sur des plateformes comme Telegram orchestrent des campagnes de harcèlement de masse, ciblant des individus avec une violence inouïe. Ces "raids" coordonnés peuvent détruire la réputation d'une personne en quelques heures, diffuser des contenus intimes sans consentement, ou pousser des victimes dans leurs derniers retranchements.
+
+\textbf{Les conséquences du cyberharcèlement sont bien plus graves que ce que l'on imagine généralement.} Au-delà de l'anxiété et de la dépression, le cyberharcèlement peut mener à l'irréparable. Chaque année, des victimes, souvent jeunes, mettent fin à leurs jours après avoir subi des campagnes de haine en ligne. Ces drames nous rappellent que derrière chaque écran se trouve un être humain, et que les mots peuvent tuer.
+
+\subsection{Objectif du projet}
+
+Ce projet est dédié à la lutte contre le cyberharcèlement. Notre objectif est de développer un outil capable de détecter automatiquement les commentaires toxiques, insultants ou menaçants, afin d'aider à la modération des espaces en ligne.
+
+\subsection{Limites et considérations éthiques}
+
+Il est important de souligner une réalité fondamentale : \textbf{il est extrêmement difficile de quantifier la gravité d'un propos par un simple nombre}. La perception d'un commentaire varie considérablement d'une personne à l'autre. Ce qui peut sembler anodin pour l'un peut être profondément blessant pour l'autre, en fonction de son vécu, de sa sensibilité, ou du contexte.
+
+Notre système de scoring (0-100) ne prétend pas être une vérité absolue. Il s'agit d'une estimation basée sur des critères linguistiques et contextuels, inspirés des approches utilisées par les grandes plateformes (Google Perspective API, systèmes de modération de TikTok et Reddit). Nous avons fait de notre mieux pour créer un outil aussi précis et nuancé que possible, tout en reconnaissant ses limites inhérentes.
+
+\section{Environnement de travail}
+
+\subsection{Système d'exploitation}
+Le développement s'est effectué sous Windows 11, avec MSYS2 MinGW-w64 pour disposer d'un environnement de compilation Unix-like compatible avec les bibliothèques nécessaires.
+
+\subsection{Outils de développement}
+\begin{itemize}
+\item \textbf{IDE :} Code::Blocks 20.03 configuré avec MinGW-w64
+\item \textbf{Compilateur :} GCC 13.2.0 (MSYS2 MinGW-w64)
+\item \textbf{Terminal :} MSYS2 MinGW64 pour l'installation des dépendances
+\item \textbf{Assistant IA :} Claude (Anthropic) pour le développement assisté
+\item \textbf{Gestionnaire de paquets :} pacman (MSYS2) pour libcurl et json-c
+\end{itemize}
+
+\subsection{Configuration de Code::Blocks}
+Configuration spécifique pour l'utilisation de libcurl et json-c :
+\begin{itemize}
+\item \textbf{Compiler search directories :} C:\textbackslash msys64\textbackslash mingw64\textbackslash include
+\item \textbf{Linker search directories :} C:\textbackslash msys64\textbackslash mingw64\textbackslash lib
+\item \textbf{Link libraries :} curl, json-c
+\end{itemize}
+
+\section{Description du projet et objectifs}
+
+\subsection{Fonctionnalités principales (v2.0)}
+\begin{enumerate}
+\item \textbf{Menu interactif complet} avec 6 modes d'utilisation
+\item \textbf{Génération automatique} de commentaires réalistes par IA
+\item \textbf{Analyse de commentaires reçus} : pour vérifier si un message reçu est problématique
+\item \textbf{Vérification avant publication} : pour tester son propre message avant de l'envoyer
+\item \textbf{Mode conversation} : analyse multiple avec statistiques
+\item \textbf{Ressources d'aide} : numéros d'urgence et sites de soutien (3018, 3114, etc.)
+\item \textbf{Analyse contextuelle avancée} inspirée de Google Perspective API
+\item \textbf{Conseils automatiques} : suggestions de reformulation si message problématique
+\end{enumerate}
+
+\subsection{Architecture à deux agents IA}
+Le système repose sur deux agents distincts :
+\begin{itemize}
+\item \textbf{Agent Générateur :} Produit des commentaires ultra-réalistes avec fautes d'orthographe, abréviations (mdr, tkt, jsp...), absence de majuscules, style authentique des réseaux sociaux
+\item \textbf{Agent Analyseur :} Évalue le niveau de toxicité selon des critères contextuels multiples
+\end{itemize}
+
+\section{Bibliothèques et technologies}
+
+\subsection{Bibliothèque libcurl}
+Utilisée pour les requêtes HTTP vers l'API Mistral. Permet la gestion des en-têtes d'authentification et l'envoi de requêtes POST contenant les prompts au format JSON.
+
+\subsection{Bibliothèque json-c}
+Essentielle pour le parsing des réponses de l'API. Permet d'extraire les champs score, catégorie et explication des réponses structurées de l'IA.
+
+\subsection{API Mistral AI}
+\begin{itemize}
+\item \textbf{Authentification :} Clé API via header Authorization Bearer
+\item \textbf{Endpoint :} /v1/chat/completions
+\item \textbf{Modèle utilisé :} mistral-small-latest (gratuit)
+\item \textbf{Format :} Requêtes et réponses en JSON
+\end{itemize}
+
+\section{Utilisation de l'Intelligence Artificielle pour le développement}
+
+\subsection{Méthodologie de développement assisté par IA}
+Ce projet a été réalisé avec l'assistance de Claude (Anthropic), démontrant l'efficacité du pair programming humain-IA :
+
+\begin{itemize}
+\item \textbf{Debugging et résolution d'erreurs :} Identification rapide des problèmes de compilation et de logique
+\item \textbf{Architecture et design patterns :} Structure modulaire du code
+\item \textbf{Génération de code :} Modules de parsing JSON et communication API
+\item \textbf{Optimisation des prompts :} Affinement des instructions pour l'IA d'analyse
+\item \textbf{Documentation :} Aide à la rédaction du README et de ce rapport
+\end{itemize}
+
+\subsection{Bénéfices mesurables}
+\begin{itemize}
+\item \textbf{Réduction du temps de développement :} Environ 70\%
+\item \textbf{Qualité du code :} Meilleures pratiques appliquées systématiquement
+\item \textbf{Apprentissage accéléré :} Compréhension approfondie de libcurl et des callbacks
+\end{itemize}
+
+\section{Fonctionnement de l'IA intégrée (API Mistral)}
+
+\subsection{Présentation de Mistral AI}
+Mistral AI est une entreprise française proposant des modèles de langage performants. L'API est accessible gratuitement avec le modèle \texttt{mistral-small-latest}.
+
+\subsection{Agent Générateur : Commentaires ultra-réalistes}
+Le prompt de génération a été conçu pour produire des commentaires authentiques :
+
+\begin{lstlisting}[language=bash, breaklines=true]
+Tu es un generateur de commentaires de reseaux sociaux 
+ULTRA REALISTES.
+REGLES STRICTES pour etre realiste :
+- Certains commentaires ont des fautes d'orthographe 
+  (sa au lieu de ca, ses au lieu de c'est)
+- Certains n'ont pas de majuscules du tout
+- Certains utilisent des abreviations 
+  (tkt, mdr, ptdr, jsp, chui, pr, tt)
+- Certains sont tres courts (1-5 mots) 
+  genre 'nul' ou 'trop bien'
+- Certains ont des emojis ou des ... ou ??? ou !!!
+- Style VRAI Twitter/TikTok/YouTube francais
+\end{lstlisting}
+
+\subsection{Agent Analyseur : Analyse contextuelle avancée}
+L'analyse ne se base jamais sur les mots isolés, mais sur le contexte global :
+
+\begin{lstlisting}[language=bash, breaklines=true]
+Tu es un detecteur de cyberharcelement base sur des 
+criteres contextuels (similaires a TikTok, Reddit 
+et Google Perspective API).
+
+NE TE BASE JAMAIS sur les mots isoles.
+Le mot "gros" peut etre amical ("ca va gros ?") 
+ou insultant ("sale gros").
+
+Evalue les elements suivants :
+- Ton general : amical / neutre / moqueur / agressif
+- Intention : humoristique, affective, insultante
+- Structure : attaque directe ("t'es...")
+- Cible : une personne specifique ou non
+- Intensite : legere, moderee, forte
+- Contexte linguistique : modificateurs aggravants
+\end{lstlisting}
+
+\subsection{Grille de scoring contextuelle}
+\begin{itemize}
+\item \textbf{0-20 :} Sain / amical / neutre
+\item \textbf{20-40 :} Rude / désagréable mais non insultant
+\item \textbf{40-60 :} Insulte légère / moquerie isolée
+\item \textbf{60-80 :} Attaque personnelle claire / humiliation
+\item \textbf{80-100 :} Haine, body-shaming agressif, menace, discrimination
+\end{itemize}
+
+\section{Travail réalisé}
+
+\subsection{Fonctionnalités implémentées}
+
+\subsubsection{Menu interactif principal}
+\begin{lstlisting}[language=bash]
+------------------------------------------
+              MENU PRINCIPAL
+------------------------------------------
+  [1] Generation automatique (IA)
+  [2] Analyser un commentaire recu
+  [3] Verifier avant de publier
+  [4] Mode conversation (multi-analyse)
+  [5] Ressources d'aide
+  [6] Quitter
+------------------------------------------
+\end{lstlisting}
+
+\subsubsection{Mode 1 : Génération automatique}
+L'utilisateur choisit un thème et un nombre de commentaires. L'IA génère des commentaires ultra-réalistes (avec fautes, abréviations, style internet) puis les analyse un par un avec statistiques finales.
+
+\subsubsection{Mode 2 : Analyser un commentaire reçu}
+Destiné aux \textbf{victimes potentielles}. L'utilisateur colle un message qu'il a reçu pour vérifier s'il est problématique. Si le score est élevé, le programme affiche automatiquement les ressources d'aide (3018, netecoute.fr).
+
+\subsubsection{Mode 3 : Vérifier avant de publier}
+Destiné aux \textbf{auteurs}. Permet de tester son propre message avant de l'envoyer. Le programme affiche des avertissements graduels selon la gravité et propose des conseils de reformulation si le message est problématique.
+
+\subsubsection{Mode 4 : Conversation}
+Permet d'analyser plusieurs commentaires à la suite. Affiche des statistiques globales à la fin (score moyen, répartition par catégorie, commentaire le plus toxique).
+
+\subsubsection{Mode 5 : Ressources d'aide}
+Affiche les numéros et sites d'aide :
+\begin{itemize}
+\item 3018 : Numéro national contre le cyberharcèlement
+\item 3114 : Prévention du suicide (24h/24)
+\item netecoute.fr, e-enfance.org, internet-signalement.gouv.fr
+\end{itemize}
+
+\subsection{Modules du code source}
+\begin{itemize}
+\item \textbf{main.c :} Menu interactif et logique principale
+\item \textbf{api\_client.c/.h :} Communication HTTP avec l'API Mistral
+\item \textbf{comment\_generator.c/.h :} Agent 1 - Génération réaliste
+\item \textbf{harassment\_detector.c/.h :} Agent 2 - Analyse contextuelle
+\item \textbf{stats.c/.h :} Calcul et affichage des statistiques
+\item \textbf{config.h :} Configuration de la clé API
+\end{itemize}
+
+\section{Répartition du travail}
+
+\begin{itemize}
+\item \textbf{DJEMATENE Dilan :} Architecture générale, développement du code C, intégration de l'API Mistral, conception des prompts IA, tests et debugging
+\item \textbf{LACOMBE Ariane :} Recherches sur le cyberharcèlement, rédaction du rapport, tests utilisateur, documentation, relecture
+\end{itemize}
+
+\section{Difficultés rencontrées}
+
+\subsection{Gestion des accents sous Windows}
+L'affichage des caractères accentués dans la console Windows a nécessité une configuration spéciale avec \texttt{SetConsoleOutputCP(65001)} pour passer en UTF-8.
+
+\subsection{Calibrage du scoring}
+Trouver le bon équilibre entre faux positifs et faux négatifs a demandé de nombreuses itérations sur les prompts. L'approche contextuelle (ne pas se baser sur les mots isolés) a grandement amélioré la précision.
+
+\subsection{Réalisme des commentaires générés}
+Les premiers commentaires générés étaient trop "propres" et ne ressemblaient pas à de vrais commentaires internet. L'ajout d'instructions spécifiques (fautes, abréviations, style oral) a résolu ce problème.
+
+\section{Bilan}
+
+\subsection{Résultats obtenus}
+Le détecteur v2.0 offre une expérience interactive complète avec trois modes d'utilisation. L'analyse contextuelle permet une évaluation nuancée qui distingue les usages amicaux des usages insultants d'un même mot.
+
+\subsection{Conclusion}
+Ce projet démontre qu'il est possible de créer un outil de détection de cyberharcèlement en C, exploitant l'intelligence artificielle pour une analyse sémantique fine. Bien que le système ne soit pas parfait (la perception de la gravité reste subjective), il constitue une base solide pour aider à la modération des espaces en ligne.
+
+La lutte contre le cyberharcèlement est l'affaire de tous. Nous espérons que ce projet contribuera, à son échelle, à sensibiliser et à protéger les victimes potentielles.
+
+\subsection{Perspectives}
+\begin{itemize}
+\item Intégration avec des APIs de réseaux sociaux (Discord, Reddit)
+\item Interface graphique pour une utilisation grand public
+\item Système d'apprentissage pour améliorer la précision au fil du temps
+\item Extension multilingue
+\end{itemize}
+
+\newpage
+\section{Bibliographie}
+\renewcommand{\bibname}{}
+\renewcommand{\refname}{}
+\begin{thebibliography}{5}
+\bibitem{} Aucun ouvrage papier consulté.
+\end{thebibliography}
+
+\newpage
+\section{Webographie}
+\begin{thebibliography}{10}
+\bibitem[CURL]{curl} Documentation libcurl : \url{https://curl.se/libcurl/c/}
+\bibitem[JSONC]{jsonc} Documentation JSON-C : \url{https://github.com/json-c/json-c}
+\bibitem[MISTRAL]{mistral} Documentation API Mistral : \url{https://docs.mistral.ai/}
+\bibitem[PERSPECTIVE]{perspective} Google Perspective API : \url{https://perspectiveapi.com/}
+\bibitem[MSYS2]{msys2} MSYS2 guide d'installation : \url{https://www.msys2.org/}
+\bibitem[CLAUDE]{claude} Assistant IA Claude : \url{https://claude.ai/}
+\end{thebibliography}
+
+\newpage
+\section{Annexes}
+\appendix
+\makeatletter
+\def\@seccntformat#1{Annexe~\csname the#1\endcsname:\quad}
+\makeatother
+
+\section{Cahier des charges}
+\subsection{Objectifs fonctionnels}
+\begin{itemize}
+\item Menu interactif avec plusieurs modes
+\item Générer des commentaires réalistes via l'Agent 1
+\item Permettre l'analyse de commentaires personnalisés
+\item Analyser chaque commentaire via l'Agent 2 (analyse contextuelle)
+\item Attribuer un score de toxicité (0-100)
+\item Classifier selon les catégories définies
+\item Fournir une explication pour chaque classification
+\item Générer des statistiques globales
+\end{itemize}
+
+\subsection{Contraintes techniques}
+\begin{itemize}
+\item Langage C uniquement
+\item Compilation avec GCC sans warnings
+\item Exécution en ligne de commande avec menu interactif
+\item Communication API via libcurl
+\item Parsing JSON via json-c
+\end{itemize}
+
+\section{Exemple d'exécution du projet}
+
+\begin{lstlisting}[language=bash]
+$ ./cyberharcelement_detector
+
+==================================================
+     DETECTEUR DE CYBERHARCELEMENT v2.0
+       Analyse & Prevention par Intelligence Artificielle
+==================================================
+
+------------------------------------------
+              MENU PRINCIPAL
+------------------------------------------
+  [1] Generation automatique (IA)
+  [2] Analyser un commentaire recu
+  [3] Verifier avant de publier
+  [4] Mode conversation (multi-analyse)
+  [5] Ressources d'aide
+  [6] Quitter
+------------------------------------------
+
+Votre choix : 5
+
+==================================================
+          RESSOURCES D'AIDE ET DE PREVENTION
+==================================================
+
+Si vous etes VICTIME de cyberharcelement :
+------------------------------------------
+  - 3018 : Numero national contre le cyberharcelement (gratuit)
+  - https://www.netecoute.fr : Ecoute et conseils
+  - https://www.e-enfance.org : Protection des mineurs
+
+Si vous avez des PENSEES SOMBRES :
+------------------------------------------
+  - 3114 : Numero national de prevention du suicide (24h/24)
+  - https://www.sos-amitie.com : Ecoute 24h/24
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash]
+Votre choix : 2
+
+=== ANALYSER UN COMMENTAIRE RECU ===
+(Pour verifier si un message que vous avez recu est problematique)
+
+Collez le commentaire a analyser :
+> ca va gros ? t'as passe un bon weekend ?
+
+[Analyse en cours...]
+
+--- RESULTAT DE L'ANALYSE ---
+| Score     : 8/100
+| Categorie : sain
+|-----------------------------
+| Explication :
+| Le terme "gros" est utilise de maniere amicale 
+| et familiere. Le ton est bienveillant.
+-----------------------------
+[OK] Ce commentaire semble sain.
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash]
+Votre choix : 3
+
+=== VERIFIER AVANT DE PUBLIER ===
+(Testez votre message AVANT de l'envoyer)
+
+Ecrivez votre commentaire :
+> t'es vraiment qu'un gros debile
+
+[Verification en cours...]
+
+##################################################
+#           VERIFICATION AVANT PUBLICATION       #
+##################################################
+
+[XXX] STOP ! Ce commentaire est une ATTAQUE.
+      Categorie : humiliation (score: 72/100)
+
+      -> Ceci peut constituer du HARCELEMENT.
+      -> La victime pourrait PORTER PLAINTE.
+      -> Vous risquez des POURSUITES JUDICIAIRES.
+
+      NE PUBLIEZ PAS CE MESSAGE.
+      Respirez. Fermez l'ecran. Revenez plus tard.
+
+##################################################
+
+Voulez-vous des suggestions pour reformuler ? (o/n) : o
+
+Conseils pour reformuler :
+- Exprimez votre desaccord sans attaquer la personne
+- Utilisez "je pense que..." plutot que "tu es..."
+- Critiquez les idees, pas les individus
+\end{lstlisting}
+
+\section{Manuel utilisateur}
+
+\subsection{Installation}
+\begin{lstlisting}[language=bash]
+# Ouvrir MSYS2 MinGW 64-bit
+
+# Installation des dependances
+pacman -S mingw-w64-x86_64-curl
+pacman -S mingw-w64-x86_64-json-c
+
+# Compilation
+make
+\end{lstlisting}
+
+\subsection{Configuration}
+Modifier le fichier \texttt{config.h} avec votre clé API Mistral :
+\begin{lstlisting}[language=c]
+#define API_KEY "votre-cle-mistral-ici"
+\end{lstlisting}
+
+\subsection{Utilisation}
+\begin{lstlisting}[language=bash]
+./cyberharcelement_detector
+\end{lstlisting}
+
+Puis suivre le menu interactif.
+
+\section{Structure du code source}
+
+\begin{lstlisting}[language=bash]
+projet/
+  |-- main.c                  # Menu interactif
+  |-- api_client.c            # Communication API
+  |-- api_client.h
+  |-- comment_generator.c     # Agent 1
+  |-- comment_generator.h
+  |-- harassment_detector.c   # Agent 2
+  |-- harassment_detector.h
+  |-- stats.c                 # Statistiques
+  |-- stats.h
+  |-- config.h                # Configuration
+  |-- Makefile
+  |-- README.md
+  |-- rapport/                # Sources LaTeX
+      |-- main.tex
+      |-- pagedegarde.sty
+      |-- bordure.png
+      |-- logo_Paris_Nanterre_couleur_RVB.png
+\end{lstlisting}
+
+\end{document}
