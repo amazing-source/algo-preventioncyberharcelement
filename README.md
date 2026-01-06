@@ -153,4 +153,4 @@ make
 
 ## Licence
 
-Projet académique - Université Paris Nanterre - 2024-2025
+Projet académique - Université Paris Nanterre - 2025-2026
