@@ -45,31 +45,50 @@ Ce projet implémente un détecteur de commentaires haineux en langage C avec un
 
 ## Installation
 
-### 1. Installer les dépendances (MSYS2 MinGW64)
+### Sur Linux (Ubuntu/Debian)
 
 ```bash
+# Installer les dépendances
+sudo apt update
+sudo apt install gcc make libcurl4-openssl-dev libjson-c-dev
+
+# Cloner le projet
+git clone https://github.com/VOTRE-USERNAME/cyberharcelement-detector.git
+cd cyberharcelement-detector
+
+# Configurer la clé API (modifier config.h)
+nano config.h
+# Remplacer VOTRE_CLE_MISTRAL_ICI par votre clé
+
+# Compiler
+make
+
+# Exécuter
+./cyberharcelement_detector
+```
+
+### Sur Windows (MSYS2 MinGW64)
+
+```bash
+# Installer les dépendances
+pacman -S mingw-w64-x86_64-gcc make
 pacman -S mingw-w64-x86_64-curl
 pacman -S mingw-w64-x86_64-json-c
+
+# Compiler
+make
+
+# Exécuter
+./cyberharcelement_detector
 ```
 
-### 2. Configurer la clé API
+### Configuration de la clé API
 
-Modifier le fichier `config.h` :
-
+1. Créer un compte sur https://console.mistral.ai/ (gratuit)
+2. Générer une clé API
+3. Modifier `config.h` :
 ```c
 #define API_KEY "votre-cle-mistral-ici"
-```
-
-### 3. Compiler le projet
-
-```bash
-make
-```
-
-Ou manuellement :
-
-```bash
-gcc -o cyberharcelement_detector.exe main.c api_client.c comment_generator.c harassment_detector.c stats.c -lcurl -ljson-c
 ```
 
 ## Utilisation
